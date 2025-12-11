@@ -32,7 +32,7 @@ struct DSU {
         if (ra == rb) return;
         if (rank[ra] < rank[rb]) parent[ra] = rb;
         else if (rank[rb] < rank[ra]) parent[rb] = ra;
-        else { parent[rb] = ra; rank[ra]++; }
+        else { parent[rb] = ra; ++rank[ra]; }
     }
 };
 
@@ -69,8 +69,8 @@ public:
 
 private:
     bool computed_ = false;
-    const Matrix3Xr& vertices_;
-    const Matrix4Xi& elements_;
+    const Matrix3Xr vertices_;
+    const Matrix4Xi elements_;
     ConnectedComponentExtractResult result_;
     Matrix3Xr Vout_;
     Matrix4Xi Tout_;

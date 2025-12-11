@@ -20,18 +20,8 @@ const ConnectedComponentExtractResult ExtractLargestComponentByAABB(
     const integer Nv = static_cast<integer>(V.cols());
     const integer Nt = static_cast<integer>(T.cols());
 
+    Assert(Nv > 0 && Nt > 0, "tet::ExtractLargestComponentByAABB", "Empty array inputs");
     ConnectedComponentExtractResult res;
-    if (Nv == 0 || Nt == 0) {
-        // empty mesh -> return empty outputs and meaningful result
-        Vout.resize(3,0);
-        Tout.resize(4,0);
-        res.is_connected = (Nt == 0 && Nv <= 1);
-        res.num_components = (Nv>0) ? Nv : 0;
-        res.largest_component_root = (Nv>0) ? 0 : -1;
-        res.largest_bbox_diag = 0.0;
-        if (Nv>0) res.comp_sizes = std::vector<integer>(res.num_components, 1);
-        return res;
-    }
 
     // 1) Build connectivity using DSU: union vertices inside each tetra
     DSU dsu(Nv);
@@ -57,7 +47,7 @@ const ConnectedComponentExtractResult ExtractLargestComponentByAABB(
         integer r = root_of[v];
         auto it = root_to_cid.find(r);
         if (it == root_to_cid.end()) {
-            integer cid = (integer)comps_vertices.size();
+            integer cid = static_cast<integer>(comps_vertices.size());
             root_to_cid[r] = cid;
             comps_vertices.emplace_back();
             comps_vertices.back().push_back(v);
