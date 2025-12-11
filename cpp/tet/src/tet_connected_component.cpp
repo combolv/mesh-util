@@ -1,4 +1,4 @@
-#include "tet_connected_component.hpp"
+#include "tet/include/tet_connected_component.hpp"
 
 namespace backend {
 namespace tet {

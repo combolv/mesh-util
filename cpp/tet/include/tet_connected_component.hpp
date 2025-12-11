@@ -40,7 +40,7 @@ const ConnectedComponentExtractResult ExtractLargestComponentByAABB(const Matrix
 
 class TetMeshConnectedComponentExtractor {
 public:
-    TetMeshConnectedComponentExtractor(const Matrix3Xr& vertices, const Matrix4Xr& elements) :
+    TetMeshConnectedComponentExtractor(const Matrix3Xr& vertices, const Matrix4Xi& elements) :
         vertices_(vertices), elements_(elements) {}
     
     void Compute() { result_ = ExtractLargestComponentByAABB(vertices_, elements_, Vout_, Tout_); computed_ = true; }
