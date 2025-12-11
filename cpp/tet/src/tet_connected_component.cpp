@@ -87,6 +87,7 @@ const ConnectedComponentExtractResult ExtractLargestComponentByAABB(
         }
     }
     res.largest_bbox_diag = best_diag;
+    res.comp_bbox_diags = diag_len;
 
     // Need the root representative of chosen component
     integer chosen_root = -1;

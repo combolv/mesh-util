@@ -11,6 +11,7 @@ struct ConnectedComponentExtractResult {
     integer largest_component_root; // representative root index (vertex id) of the chosen component
     real largest_bbox_diag;   // diagonal length of chosen component's AABB
     std::vector<integer> comp_sizes;// sizes (# vertices) of each component (indexed implicitly by order-of-discovery)
+    std::vector<real> comp_bbox_diags; // diagonal lengths of each component's AABB
 };
 
 // Simple Union-Find / Disjoint Set (path compression + union by rank)
@@ -70,6 +71,11 @@ public:
         }
         oss << "\n";
         return oss.str();
+    }
+
+    const std::pair<std::vector<integer>, std::vector<real>>& GetComponentSizes() const {
+        Assert(computed_, "tet::TetMeshConnectedComponentExtractor::GetComponentSizes", "Compute() must be called before GetComponentInfo().");
+        return {result_.comp_sizes, result_.comp_bbox_diags};
     }
 
 private:

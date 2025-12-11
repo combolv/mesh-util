@@ -11,5 +11,6 @@ PYBIND11_MODULE(backend, m) {
         .def("Compute", &backend::tet::TetMeshConnectedComponentExtractor::Compute)
         .def("GetExtractedMesh", &backend::tet::TetMeshConnectedComponentExtractor::GetExtractedMesh)
         .def("IsConnected", &backend::tet::TetMeshConnectedComponentExtractor::IsConnected)
-        .def("GetReportString", &backend::tet::TetMeshConnectedComponentExtractor::GetReportString);
+        .def("GetReportString", &backend::tet::TetMeshConnectedComponentExtractor::GetReportString)
+        .def("GetComponentSizes", &backend::tet::TetMeshConnectedComponentExtractor::GetComponentSizes);
 }
