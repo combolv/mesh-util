@@ -10,5 +10,6 @@ PYBIND11_MODULE(backend, m) {
         .def(pybind11::init<const backend::Matrix3Xr&, const backend::Matrix4Xi&>(), pybind11::arg("vertices"), pybind11::arg("elements"))
         .def("Compute", &backend::tet::TetMeshConnectedComponentExtractor::Compute)
         .def("GetExtractedMesh", &backend::tet::TetMeshConnectedComponentExtractor::GetExtractedMesh)
+        .def("IsConnected", &backend::tet::TetMeshConnectedComponentExtractor::IsConnected)
         .def("GetReportString", &backend::tet::TetMeshConnectedComponentExtractor::GetReportString);
 }

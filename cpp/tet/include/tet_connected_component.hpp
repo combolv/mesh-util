@@ -50,6 +50,11 @@ public:
         return {Vout_, Tout_};
     }
 
+    const bool IsConnected() const {
+        Assert(computed_, "tet::TetMeshConnectedComponentExtractor::IsConnected", "Compute() must be called before IsConnected().");
+        return result_.is_connected;
+    }
+
     const std::string GetReportString() const {
         Assert(computed_, "tet::TetMeshConnectedComponentExtractor::GetReportString", "Compute() must be called before GetReportString().");
         std::ostringstream oss;
