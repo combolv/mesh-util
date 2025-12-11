@@ -1,4 +1,4 @@
-#include "tet/include/tet_visualizer.cuh"
+#include "tet/include/tet_cross_section.cuh"
 #include "basic/include/cuda_helper.hpp"
 #include "thrust/device_vector.h"
 #include "thrust/reduce.h"
