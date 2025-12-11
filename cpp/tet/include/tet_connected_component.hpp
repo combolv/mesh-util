@@ -73,7 +73,7 @@ public:
         return oss.str();
     }
 
-    const std::pair<std::vector<integer>, std::vector<real>>& GetComponentSizes() const {
+    const std::pair<std::vector<integer>, std::vector<real>> GetComponentSizes() const {
         Assert(computed_, "tet::TetMeshConnectedComponentExtractor::GetComponentSizes", "Compute() must be called before GetComponentInfo().");
         return {result_.comp_sizes, result_.comp_bbox_diags};
     }
