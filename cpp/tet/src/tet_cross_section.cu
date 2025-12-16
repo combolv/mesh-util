@@ -274,32 +274,32 @@ public:
 // The main function to compute the tetrahedral mesh's intersection with the XY-plane.
 // Return <points, colors> of the resulting triangles.
 const std::pair<Matrix2Xr, VectorXr> ComputeTetXYIntersectionGpu(
-    const MatrixX3r& tet_vertices,
-    const MatrixX4i& tet_indices,
+    const Matrix3Xr& tet_vertices,
+    const Matrix4Xi& tet_indices,
     const VectorXr& tet_scalar_field) {
-    const integer num_tets = tet_indices.rows();
+    const integer num_tets = tet_indices.cols();
     // Allocate output buffer.
     thrust::device_vector<ColoredTriangle> d_output_triangles(num_tets * 2);
     // Copy input data to device.
-    thrust::device_vector<Vector3r> tet_vertices_dev(tet_vertices.rows());
-    std::vector<Vector3r> zero_vecs(tet_vertices.rows(), Vector3r::Zero());
-    for (integer i = 0; i < tet_vertices.rows(); ++i) {
-        zero_vecs[i](0) = tet_vertices(i, 0);
-        zero_vecs[i](1) = tet_vertices(i, 1);
-        zero_vecs[i](2) = tet_vertices(i, 2);
+    thrust::device_vector<Vector3r> tet_vertices_dev(tet_vertices.cols());
+    std::vector<Vector3r> zero_vecs(tet_vertices.cols(), Vector3r::Zero());
+    for (integer i = 0; i < tet_vertices.cols(); ++i) {
+        zero_vecs[i](0) = tet_vertices(0, i);
+        zero_vecs[i](1) = tet_vertices(1, i);
+        zero_vecs[i](2) = tet_vertices(2, i);
     }
     thrust::copy(
         zero_vecs.data(),
         zero_vecs.data() + zero_vecs.size(),
         tet_vertices_dev.begin());
-    std::vector<Vector4i> zero_vec4is(tet_indices.rows(), Vector4i::Zero());
-    for (integer i = 0; i < tet_indices.rows(); ++i) {
-        zero_vec4is[i](0) = tet_indices(i, 0);
-        zero_vec4is[i](1) = tet_indices(i, 1);
-        zero_vec4is[i](2) = tet_indices(i, 2);
-        zero_vec4is[i](3) = tet_indices(i, 3);
+    std::vector<Vector4i> zero_vec4is(tet_indices.cols(), Vector4i::Zero());
+    for (integer i = 0; i < tet_indices.cols(); ++i) {
+        zero_vec4is[i](0) = tet_indices(0, i);
+        zero_vec4is[i](1) = tet_indices(1, i);
+        zero_vec4is[i](2) = tet_indices(2, i);
+        zero_vec4is[i](3) = tet_indices(3, i);
     }
-    thrust::device_vector<Vector4i> tet_indices_dev(tet_indices.rows());
+    thrust::device_vector<Vector4i> tet_indices_dev(tet_indices.cols());
     thrust::copy(
         zero_vec4is.data(),
         zero_vec4is.data() + zero_vec4is.size(),

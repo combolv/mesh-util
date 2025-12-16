@@ -17,8 +17,8 @@ struct ColoredTriangle {
 };
 
 const std::pair<Matrix2Xr, VectorXr> ComputeTetXYIntersectionGpu(
-    const MatrixX3r& tet_vertices,
-    const MatrixX4i& tet_indices,
+    const Matrix3Xr& tet_vertices,
+    const Matrix4Xi& tet_indices,
     const VectorXr& tet_scalar_field);
 
 }

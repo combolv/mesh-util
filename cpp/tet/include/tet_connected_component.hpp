@@ -87,6 +87,56 @@ private:
     Matrix4Xi Tout_;
 };
 
+const ConnectedComponentExtractResult ExtractLargestComponentByAABB(const Matrix3Xr&, const Matrix3Xi&, Matrix3Xr&, Matrix3Xi&);
+
+class SurfaceMeshConnectedComponentExtractor {
+public:
+    SurfaceMeshConnectedComponentExtractor(const Matrix3Xr& vertices, const Matrix3Xi& faces) :
+        vertices_(vertices), faces_(faces) {}
+    
+    void Compute() { result_ = ExtractLargestComponentByAABB(vertices_, faces_, Vout_, Fout_); computed_ = true; }
+    
+    const std::pair<Matrix3Xr, Matrix3Xi> GetExtractedMesh() const {
+        Assert(computed_, "tet::SurfaceMeshConnectedComponentExtractor::GetExtractedMesh", "Compute() must be called before GetExtractedMesh().");
+        return {Vout_, Fout_};
+    }
+    
+    const bool IsConnected() const {
+        Assert(computed_, "tet::SurfaceMeshConnectedComponentExtractor::IsConnected", "Compute() must be called before IsConnected().");
+        return result_.is_connected;
+    }
+    
+    const std::string GetReportString() const {
+        Assert(computed_, "tet::SurfaceMeshConnectedComponentExtractor::GetReportString", "Compute() must be called before GetReportString().");
+        std::ostringstream oss;
+        oss << "Connected Component Extraction Report:\n";
+        oss << "  Is Connected: " << (result_.is_connected ? "Yes" : "No") << "\n";
+        oss << "  Number of Components: " << result_.num_components << "\n";
+        oss << "  Largest Component Root Vertex ID: " << result_.largest_component_root << "\n";
+        oss << "  Largest Component AABB Diagonal Length: " << result_.largest_bbox_diag << "\n";
+        oss << "  Component Sizes (in #vertices): ";
+        for (size_t i = 0; i < result_.comp_sizes.size(); ++i) {
+            oss << result_.comp_sizes[i];
+            if (i + 1 < result_.comp_sizes.size()) oss << ", ";
+        }
+        oss << "\n";
+        return oss.str();
+    }
+    
+    const std::pair<std::vector<integer>, std::vector<real>> GetComponentSizes() const {
+        Assert(computed_, "tet::SurfaceMeshConnectedComponentExtractor::GetComponentSizes", "Compute() must be called before GetComponentSizes().");
+        return {result_.comp_sizes, result_.comp_bbox_diags};
+    }
+
+private:
+    bool computed_ = false;
+    const Matrix3Xr vertices_;
+    const Matrix3Xi faces_;
+    ConnectedComponentExtractResult result_;
+    Matrix3Xr Vout_;
+    Matrix3Xi Fout_;
+};
+
 }
 }
 
