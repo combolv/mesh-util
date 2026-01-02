@@ -9,12 +9,6 @@
 namespace backend {
 namespace tet {
 
-__device__ __constant__ static integer kTetFaces[4][3] = {
-    {1, 2, 3},
-    {0, 3, 2},
-    {0, 1, 3},
-    {0, 2, 1}
-};
 
 struct TetToFacesFunctor {
     const Vector3r* vertices;
@@ -36,6 +30,13 @@ struct TetToFacesFunctor {
             tri.tet_id  = tid;
             tri.face_id = f;
             tri.is_valid = true;
+
+            static constexpr integer kTetFaces[4][3] = {
+                {1, 2, 3},
+                {0, 3, 2},
+                {0, 1, 3},
+                {0, 2, 1}
+            };
 
             const integer i0 = kTetFaces[f][0];
             const integer i1 = kTetFaces[f][1];
