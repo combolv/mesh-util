@@ -135,25 +135,39 @@ SurfaceMeshResult ComputeSurfaceMesh(
     const Matrix3Xr& tet_vertices,
     const Matrix4Xi& tet_indices) {
 
-    const integer num_tets = tet_indices.cols();
+    const std::string error_location = "tet::ComputeSurfaceMesh";
 
+    const integer num_tets = tet_indices.cols();
+    Tic();
     // --------------------------------------------------------
     // Copy input to device
     // --------------------------------------------------------
-
+    Tic();
     thrust::device_vector<Vector3r> d_vertices(tet_vertices.cols());
     thrust::device_vector<Vector4i> d_tets(num_tets);
 
+    // Make a vector of Vector3r and Vector4i.
+    std::vector<Vector3r> h_vertices(tet_vertices.cols());
+    std::vector<Vector4i> h_tets(num_tets);
     for (integer i = 0; i < tet_vertices.cols(); ++i)
-        d_vertices[i] = tet_vertices.col(i);
+        h_vertices[i] = tet_vertices.col(i);
 
     for (integer i = 0; i < num_tets; ++i)
-        d_tets[i] = tet_indices.col(i);
+        h_tets[i] = tet_indices.col(i);
+
+    thrust::copy(
+        h_vertices.begin(), h_vertices.end(),
+        d_vertices.begin());
+    thrust::copy(
+        h_tets.begin(), h_tets.end(),
+        d_tets.begin());
+
+    Toc(error_location, "Copy input data to device");
 
     // --------------------------------------------------------
     // Step 1: Tet -> faces
     // --------------------------------------------------------
-
+    Tic();
     thrust::device_vector<OrientedTriangle> d_faces(num_tets * 4);
 
     TetToFacesFunctor face_functor {
@@ -166,11 +180,13 @@ SurfaceMeshResult ComputeSurfaceMesh(
         thrust::counting_iterator<integer>(0),
         thrust::counting_iterator<integer>(num_tets),
         face_functor);
+    Toc(error_location, "Extract faces");
 
     // --------------------------------------------------------
     // Step 2: Remove internal faces
     // --------------------------------------------------------
 
+    Tic();
     thrust::device_vector<FaceKey> d_keys(d_faces.size());
     thrust::transform(
         d_faces.begin(), d_faces.end(),
@@ -219,11 +235,13 @@ SurfaceMeshResult ComputeSurfaceMesh(
     thrust::sort(d_used_vertices.begin(), d_used_vertices.end());
     auto v_end = thrust::unique(d_used_vertices.begin(), d_used_vertices.end());
     d_used_vertices.resize(v_end - d_used_vertices.begin());
+    Toc(error_location, "Remove internal faces");
 
     // --------------------------------------------------------
     // Copy back + build output
     // --------------------------------------------------------
 
+    Tic();
     std::vector<integer> h_used_vertices(d_used_vertices.size());
     thrust::copy(
         d_used_vertices.begin(), d_used_vertices.end(),
@@ -258,6 +276,10 @@ SurfaceMeshResult ComputeSurfaceMesh(
         }
         result.parent_tet(i) = h_faces[i].tet_id;
     }
+
+    Toc(error_location, "Copy output data to host");
+
+    Toc(error_location, "All done");
 
     return result;
 }

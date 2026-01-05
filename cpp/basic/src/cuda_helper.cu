@@ -2,10 +2,8 @@
 #include "basic/include/log.hpp"
 #include "basic/include/math.hpp"
 
-// For now, some timing functions are disabled by the following micros.
-#define Tic(...) ;
+// For now, the PrintInfo functions are disabled by the following micros.
 #define PrintInfo(...) ;
-#define Toc(...) ;
 
 namespace backend {
 
