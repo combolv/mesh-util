@@ -147,20 +147,29 @@ SurfaceMeshResult ComputeSurfaceMesh(
     thrust::device_vector<Vector4i> d_tets(num_tets);
 
     // Make a vector of Vector3r and Vector4i.
-    std::vector<Vector3r> h_vertices(tet_vertices.cols());
-    std::vector<Vector4i> h_tets(num_tets);
-    for (integer i = 0; i < tet_vertices.cols(); ++i)
-        h_vertices[i] = tet_vertices.col(i);
+    // std::vector<Vector3r> h_vertices(tet_vertices.cols());
+    // std::vector<Vector4i> h_tets(num_tets);
+    // for (integer i = 0; i < tet_vertices.cols(); ++i)
+    //     h_vertices[i] = tet_vertices.col(i);
 
-    for (integer i = 0; i < num_tets; ++i)
-        h_tets[i] = tet_indices.col(i);
-
+    // for (integer i = 0; i < num_tets; ++i)
+    //     h_tets[i] = tet_indices.col(i);
     thrust::copy(
-        h_vertices.begin(), h_vertices.end(),
-        d_vertices.begin());
+        reinterpret_cast<const Vector3r*>(tet_vertices.data()),
+        reinterpret_cast<const Vector3r*>(tet_vertices.data()) + tet_vertices.cols(),
+        d_vertices.begin()
+    );
     thrust::copy(
-        h_tets.begin(), h_tets.end(),
-        d_tets.begin());
+        reinterpret_cast<const Vector4i*>(tet_indices.data()),
+        reinterpret_cast<const Vector4i*>(tet_indices.data()) + num_tets,
+        d_tets.begin()
+    );
+    // thrust::copy(
+    //     h_vertices.begin(), h_vertices.end(),
+    //     d_vertices.begin());
+    // thrust::copy(
+    //     h_tets.begin(), h_tets.end(),
+    //     d_tets.begin());
 
     Toc(error_location, "Copy input data to device");
 
